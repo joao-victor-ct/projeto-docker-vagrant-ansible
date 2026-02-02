@@ -89,14 +89,17 @@ Clone o repositório:
 ```bash
 git clone https://github.com/joao-victor-ct/projeto-docker-vagrant-ansible.git
 cd projeto-docker-vagrant-ansible
+```
 
 Execute o provisionamento:
 ```bash
 vagrant up
+```
 
 Após a finalização, acesse no navegador:
 ```bash
 http://192.168.56.132:8080
+```
 
 ✅ Resultado Esperado
 
