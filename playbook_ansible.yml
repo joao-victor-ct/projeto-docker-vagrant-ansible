@@ -39,6 +39,12 @@
           - docker-compose-plugin
         state: present
 
+    - name: Adicionar usuário vagrant ao grupo docker
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
     - name: Criar diretório do projeto
       file:
         path: /opt/wordpress
