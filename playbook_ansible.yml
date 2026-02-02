@@ -1,0 +1,55 @@
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Atualizar sistema
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Instalar dependências
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Adicionar chave GPG do Docker
+      shell: |
+        curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+
+    - name: Adicionar repositório Docker
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
+        https://download.docker.com/linux/debian bookworm stable" \
+        > /etc/apt/sources.list.d/docker.list
+
+    - name: Atualizar cache
+      apt:
+        update_cache: yes
+
+    - name: Instalar Docker e Docker Compose v2
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Criar diretório do projeto
+      file:
+        path: /opt/wordpress
+        state: directory
+
+    - name: Copiar docker-compose.yml
+      copy:
+        src: docker-compose.yml
+        dest: /opt/wordpress/docker-compose.yml
+
+    - name: Subir containers
+      shell: |
+        cd /opt/wordpress && docker compose up -d
+

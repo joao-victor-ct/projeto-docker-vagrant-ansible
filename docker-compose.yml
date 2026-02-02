@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  webproxy:
+    image: joaovictorct/nginx-l4-proxy:latest
+    container_name: webproxy
+    ports:
+      - "8080:8080"
+    networks:
+      - wordpress
+    depends_on:
+      - webserver
+
+  webserver:
+    image: wordpress:latest
+    container_name: webserver
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+      WORDPRESS_DB_NAME: wpdb
+    volumes:
+      - app:/var/www/html
+    networks:
+      - wordpress
+
+  database:
+    image: mysql:8.0
+    container_name: database
+    environment:
+      MYSQL_DATABASE: wpdb
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - my:/var/lib/mysql
+    networks:
+      - wordpress
+
+volumes:
+  app:
+  my:
+
+networks:
+  wordpress:
+    driver: bridge
+
