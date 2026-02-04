@@ -81,6 +81,7 @@ Apenas o container **webproxy** é exposto externamente, garantindo melhor organ
 ### Pré-requisitos
 - VirtualBox
 - Vagrant
+- Ansible
 - Git
 
 ### Passos para execução
