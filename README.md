@@ -22,7 +22,7 @@ Este projeto tem como objetivo implementar o provisionamento automático de uma 
 - **Ansible**: automação da configuração do sistema operacional
 - **Docker**: criação e execução de containers
 - **Docker Compose**: orquestração dos containers
-- **Nginx**: proxy com balanceamento de carga em camada 4
+- **Nginx**: proxy com balanceamento de carga em camada 4 (transporte)
 - **WordPress**: aplicação web
 - **MySQL**: banco de dados
 
