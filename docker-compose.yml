@@ -1,47 +1,113 @@
+# Define a versão do Docker Compose utilizada
 version: "3.9"
 
+# Lista de serviços (containers) que serão criados
 services:
+
+  # Container do Nginx que atua como proxy reverso
   webproxy:
+
+    # Imagem personalizada do Nginx hospedada no Docker Hub
     image: joaovictorct/nginx-l4-proxy:latest
+
+    # Nome fixo do container
     container_name: webproxy
+
+    # Mapeia a porta 8080 do host para a porta 8080 do container
     ports:
       - "8080:8080"
+
+    # Conecta esse container à rede wordpress
     networks:
       - wordpress
+
+    # Garante que o webserver seja iniciado antes
     depends_on:
       - webserver
 
+
+  # Container do WordPress
   webserver:
+
+    # Imagem oficial do WordPress
     image: wordpress:latest
+
+    # Nome fixo do container
     container_name: webserver
+
+    # Variáveis de ambiente usadas pelo WordPress
     environment:
+
+      # Endereço do banco de dados e porta
       WORDPRESS_DB_HOST: database:3306
+
+      # Usuário do banco
       WORDPRESS_DB_USER: wpuser
+
+      # Senha do usuário
       WORDPRESS_DB_PASSWORD: wppass
+
+      # Nome do banco de dados
       WORDPRESS_DB_NAME: wpdb
+
+    # Volume para persistir arquivos do WordPress
     volumes:
       - app:/var/www/html
+
+    # Conecta à mesma rede dos outros containers
     networks:
       - wordpress
 
+
+  # Container do banco de dados MySQL
   database:
+
+    # Imagem oficial do MySQL versão 8.0
     image: mysql:8.0
+
+    # Nome fixo do container
     container_name: database
+
+    # Variáveis de ambiente para criação do banco
     environment:
+
+      # Nome do banco que será criado
       MYSQL_DATABASE: wpdb
+
+      # Usuário do banco
       MYSQL_USER: wpuser
+
+      # Senha do usuário
       MYSQL_PASSWORD: wppass
+
+      # Senha do usuário root do MySQL
       MYSQL_ROOT_PASSWORD: rootpass
+
+    # Volume para salvar dados do banco
     volumes:
       - my:/var/lib/mysql
+
+    # Conecta à rede wordpress
     networks:
       - wordpress
 
+
+# Definição dos volumes persistentes
 volumes:
+
+  # Volume dos arquivos do WordPress
   app:
+
+  # Volume dos dados do MySQL
   my:
 
+
+# Definição das redes
 networks:
+
+  # Rede interna entre os containers
   wordpress:
+
+    # Tipo bridge (padrão do Docker)
     driver: bridge
 
