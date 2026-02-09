@@ -1,3 +1,5 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 # Define a versão da sintaxe do Vagrant
 Vagrant.configure("2") do |config|
 
