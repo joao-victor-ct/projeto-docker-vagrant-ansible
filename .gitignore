@@ -1,3 +1,8 @@
+# Pasta criada automaticamente pelo Vagrant
+# Contém arquivos internos da máquina virtual
+# Não deve ser enviada para o GitHub
 .vagrant/
-*.log
 
+# Ignora qualquer arquivo com extensão .log
+# Arquivos de log são apenas registros de execução
+*.log
