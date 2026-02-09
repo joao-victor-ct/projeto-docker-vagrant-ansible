@@ -1,35 +1,46 @@
+# Define que o playbook será executado em todos os hosts
 - hosts: all
+
+  # Executa as tarefas como administrador (root)
   become: true
 
+  # Lista de tarefas que o Ansible irá executar
   tasks:
+
+    # Atualiza a lista de pacotes e o sistema
     - name: Atualizar sistema
       apt:
         update_cache: yes
         upgrade: dist
 
+    # Instala pacotes necessários para adicionar repositórios
     - name: Instalar dependências
       apt:
         name:
-          - ca-certificates
-          - curl
-          - gnupg
-          - lsb-release
+          - ca-certificates   # certificados de segurança
+          - curl              # ferramenta para download
+          - gnupg              # criptografia de chaves
+          - lsb-release        # identifica versão do sistema
         state: present
 
+    # Baixa e adiciona a chave GPG oficial do Docker
     - name: Adicionar chave GPG do Docker
       shell: |
         curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
 
+    # Adiciona o repositório oficial do Docker
     - name: Adicionar repositório Docker
       shell: |
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
         https://download.docker.com/linux/debian bookworm stable" \
         > /etc/apt/sources.list.d/docker.list
 
+    # Atualiza novamente a lista de pacotes
     - name: Atualizar cache
       apt:
         update_cache: yes
 
+    # Instala Docker e Docker Compose
     - name: Instalar Docker e Docker Compose v2
       apt:
         name:
@@ -39,22 +50,26 @@
           - docker-compose-plugin
         state: present
 
+    # Permite que o usuário vagrant execute Docker sem sudo
     - name: Adicionar usuário vagrant ao grupo docker
       user:
         name: vagrant
         groups: docker
         append: yes
 
+    # Cria pasta onde ficará o projeto
     - name: Criar diretório do projeto
       file:
         path: /opt/wordpress
         state: directory
 
+    # Copia o arquivo docker-compose.yml da máquina host para a VM
     - name: Copiar docker-compose.yml
       copy:
         src: docker-compose.yml
         dest: /opt/wordpress/docker-compose.yml
 
+    # Executa o Docker Compose e sobe os containers
     - name: Subir containers
       shell: |
         cd /opt/wordpress && docker compose up -d
